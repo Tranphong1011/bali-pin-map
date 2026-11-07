@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+backend/db.sqlite3
+backend/staticfiles/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Scraped Google Maps data stays local; load it into the DB with `manage.py load_reference`
+data/
+
+# Secrets
+.env
+*.env

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bali Pin Map</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌴</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <header class="top">
+      <div class="brand">
+        <span class="logo">🌴</span>
+        <div>
+          <h1>Bali Pin Map</h1>
+          <span id="saved" class="saved">Auto-saved on this device</span>
+        </div>
+      </div>
+      <details class="menu" id="menu">
+        <summary title="Options">⋯</summary>
+        <div class="menu-pop">
+          <button type="button" data-menu="export">⬇️ Export data (JSON)</button>
+          <button type="button" data-menu="import">⬆️ Import data (JSON)</button>
+          <button type="button" data-menu="settings">🖼️ Google image settings</button>
+          <hr>
+          <button type="button" data-menu="clear" class="danger-text">🗑️ Delete all places</button>
+        </div>
+      </details>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+    </header>
+
+    <form id="searchForm" class="search" autocomplete="off">
+      <div class="search-box">
+        <input id="q" type="search" placeholder="Search: Tanah Lot, Ubud, Kelingking…">
+        <button type="submit" id="btnSearch" class="btn primary">Search</button>
+      </div>
+      <div class="pin-to">
+        <span>Pin to group</span>
+        <span id="activeDot" class="dot"></span>
+        <select id="activeGroup"></select>
+      </div>
+    </form>
+
+    <div id="scroll" class="scroll">
+      <div id="results"></div>
+
+      <div id="listView">
+        <section>
+          <div class="sec-head">
+            <h2>Color groups</h2>
+            <button type="button" class="btn ghost sm" id="btnAddGroup">+ New group</button>
+          </div>
+          <div id="groupChips" class="chips"></div>
+          <p class="hint">Click to show/hide · double-click to show only that group · ✎ to rename/recolor</p>
+        </section>
+        <section>
+          <div class="sec-head">
+            <h2>Pinned places <span id="count" class="count"></span></h2>
+            <div class="sec-tools">
+              <label class="toggle"><input type="checkbox" id="showLabels"> Labels</label>
+              <button type="button" class="btn ghost sm" id="btnFit">Show all</button>
+            </div>
+          </div>
+          <div id="placeList"></div>
+        </section>
+      </div>
+
+      <div id="detailView" hidden></div>
+    </div>
+  </aside>
+
+  <main id="map"></main>
+</div>
+
+<dialog id="groupDlg">
+  <form method="dialog" id="groupForm">
+    <h3 id="groupDlgTitle">New group</h3>
+    <label class="field">
+      <span>Group name</span>
+      <input id="groupName" required maxlength="40" placeholder="e.g. Day 1 – Ubud">
+    </label>
+    <div class="field">
+      <span>Color</span>
+      <div id="swatches" class="swatches"></div>
+    </div>
+    <div class="dlg-actions">
+      <button type="button" class="btn danger-text" id="groupDelete">Delete group</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn ghost" data-close>Cancel</button>
+      <button value="ok" class="btn primary">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="settingsDlg">
+  <form method="dialog" id="settingsForm">
+    <h3>Google images (optional)</h3>
+    <p class="muted">
+      By default the app fetches 3 free photos from <b>Wikimedia Commons</b> (by place name + location),
+      plus a button to open <b>Google Images</b> for more. To have the app pull photos directly from Google, you need a
+      <b>Google Custom Search JSON API key</b> + a <b>Search engine ID (cx)</b> with “Image search” enabled.
+    </p>
+    <p class="muted small">Note: Google no longer issues this API to new customers — only fill this in if you already have a key. The key is stored only in your browser.</p>
+    <label class="field"><span>API key</span><input id="gKey" placeholder="AIza…"></label>
+    <label class="field"><span>Search engine ID (cx)</span><input id="gCx" placeholder="0123456789abc…"></label>
+    <div class="dlg-actions">
+      <span class="spacer"></span>
+      <button type="button" class="btn ghost" data-close>Cancel</button>
+      <button value="ok" class="btn primary">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="lightbox" class="lightbox" hidden>
+  <button type="button" class="lb-close" data-lb="close" title="Close">×</button>
+  <button type="button" class="lb-nav prev" data-lb="prev" title="Previous image">‹</button>
+  <figure>
+    <img id="lbImg" alt="">
+    <figcaption id="lbCap"></figcaption>
+  </figure>
+  <button type="button" class="lb-nav next" data-lb="next" title="Next image">›</button>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
